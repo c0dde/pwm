@@ -13,46 +13,27 @@ GPIO.setup(ECHO,GPIO.IN)
 #Buzzer
 GPIO.setup(BUZZ,GPIO.OUT)
 
+#Setup PWM
+GPIO.output(BUZZ, True)
 
-#This function takes distance as a prarmeter, and perform
-#corresponding speed of sound
+# GPIO 18 for PWM with 20Hz
+pwm = GPIO.PWM(BUZZ, 20)
 
-def beep(dist):
+#Initialisation
+pwm.start(1)
+
+def change_freq(dist):
     int(dist)
-    
-    t_end = time.time() + 2.1
-    while time.time() < t_end:
-
-        
-        if (dist <= 5):
-            GPIO.output(BUZZ,GPIO.HIGH)
-            time.sleep(0.1)
-            GPIO.output(BUZZ,GPIO.LOW)
-            time.sleep(0.1)
-
-        elif (dist <= 10):
-            GPIO.output(BUZZ,GPIO.HIGH)
-            time.sleep(0.2)
-            GPIO.output(BUZZ,GPIO.LOW)
-            time.sleep(0.2)
-            
-        elif (dist <= 15):
-            GPIO.output(BUZZ,GPIO.HIGH)
-            time.sleep(0.4)
-            GPIO.output(BUZZ,GPIO.LOW)
-            time.sleep(0.4)
-            
-        elif (dist <= 20):
-            GPIO.output(BUZZ,GPIO.HIGH)
-            time.sleep(0.5)
-            GPIO.output(BUZZ,GPIO.LOW)
-            time.sleep(0.5)
-            
-        else:
-            GPIO.output(BUZZ,GPIO.HIGH)
-            time.sleep(1)
-            GPIO.output(BUZZ,GPIO.LOW)
-            time.sleep(1)
+    if (dist <= 5):
+        pwm.ChangeFrequency(3)
+    elif (dist <= 10):
+        pwm.ChangeFrequency(2.5)
+    elif (dist <= 15):
+        pwm.ChangeFrequency(2)
+    elif (dist <= 20):
+        pwm.ChangeFrequency(1.5)
+    else:
+        pwm.ChangeFrequency(1)
 
 
 try:
@@ -76,12 +57,10 @@ try:
         distance = pulse_duration * 17150
         distance = round(distance, 2)
         print ("Distance:",distance,"cm")
-
-        #Call the beep function by passing the distance to it.
-        beep(distance)
+        
+        #change the frequency by the distance
+        change_freq(distance)
+        time.sleep(2)
 
 except KeyboardInterrupt:
     GPIO.cleanup()
-
-
-
